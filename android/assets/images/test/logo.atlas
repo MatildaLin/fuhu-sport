@@ -1,0 +1,76 @@
+
+logo.png
+size: 1275,1152
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+flag_left
+  rotate: false
+  xy: 953, 750
+  size: 309, 400
+  orig: 468, 564
+  offset: 83, 68
+  index: -1
+flag_right
+  rotate: false
+  xy: 964, 347
+  size: 309, 401
+  orig: 462, 564
+  offset: 83, 68
+  index: -1
+logo
+  rotate: false
+  xy: 2, 797
+  size: 949, 353
+  orig: 1053, 543
+  offset: 55, 71
+  index: -1
+title_bg
+  rotate: false
+  xy: 2, 271
+  size: 691, 524
+  orig: 840, 729
+  offset: 69, 109
+  index: -1
+title_top00
+  rotate: true
+  xy: 2, 2
+  size: 267, 255
+  orig: 360, 312
+  offset: 47, 34
+  index: -1
+title_top01
+  rotate: true
+  xy: 259, 2
+  size: 267, 255
+  orig: 360, 312
+  offset: 47, 34
+  index: -1
+title_top02
+  rotate: true
+  xy: 516, 2
+  size: 267, 255
+  orig: 360, 312
+  offset: 47, 34
+  index: -1
+title_top03
+  rotate: true
+  xy: 695, 528
+  size: 267, 255
+  orig: 360, 312
+  offset: 47, 34
+  index: -1
+title_top04
+  rotate: false
+  xy: 695, 271
+  size: 267, 255
+  orig: 360, 312
+  offset: 47, 34
+  index: -1
+title_top05
+  rotate: true
+  xy: 773, 2
+  size: 267, 255
+  orig: 360, 312
+  offset: 47, 34
+  index: -1
