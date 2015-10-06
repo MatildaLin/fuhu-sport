@@ -30,8 +30,6 @@ import com.fuhu.gdx.scene.transition.NoTransition;
 public class SoccerScene extends PhysicScene {
 
     private static final float PIXEL_PER_METER = 40;
-    //  public final float WORLD_WIDTH = 40;
-    //	public final float WORLD_HEIGHT = 24;
     public final float WORLD_WIDTH = 1920;
     public final float WORLD_HEIGHT = 1128;
     public final float BACKGROUND_WIDTH = 2280;
@@ -58,6 +56,9 @@ public class SoccerScene extends PhysicScene {
     private Texture textureGloves;
     private Texture textureField;
     private Texture textureBall;
+	private String pathSoccerGloves = "images/sport/soccer/soccer_gloves.png";
+	private String pathSoccerField = "images/sport/soccer/soccer_field.png";
+	private String pathSoccer = "images/sport/soccer/soccer.png";
 
     private boolean resetBall;
     private boolean prepareBall;
@@ -75,16 +76,16 @@ public class SoccerScene extends PhysicScene {
 
     @Override
     public void loadResources(AssetManager assetManager) {
-        assetManager.load("images/sport/soccer/soccer_gloves.png", Texture.class);
-        assetManager.load("images/sport/soccer/soccer_field.png", Texture.class);
-        assetManager.load("images/sport/soccer/soccer.png", Texture.class);
+        assetManager.load(pathSoccerGloves, Texture.class);
+        assetManager.load(pathSoccerField, Texture.class);
+        assetManager.load(pathSoccer, Texture.class);
     }
 
     @Override
     public void loadResourcesComplete(AssetManager assetManager) {
-        textureGloves = assetManager.get("images/sport/soccer/soccer_gloves.png", Texture.class);
-        textureField = assetManager.get("images/sport/soccer/soccer_field.png", Texture.class);
-        textureBall = assetManager.get("images/sport/soccer/soccer.png", Texture.class);
+    	textureGloves = assetManager.get(pathSoccerGloves, Texture.class);
+    	textureField = assetManager.get(pathSoccerField, Texture.class);
+    	textureBall = assetManager.get(pathSoccer, Texture.class);
 
         batch = new SpriteBatch();
 
@@ -107,17 +108,14 @@ public class SoccerScene extends PhysicScene {
 
     @Override
     public void unloadResources(AssetManager assetManager) {
-        assetManager.unload("images/sport/soccer/soccer_gloves.png");
-        assetManager.unload("images/sport/soccer/soccer_field.png");
-        assetManager.unload("images/sport/soccer/soccer.png");
+    	assetManager.unload(pathSoccerGloves);
+        assetManager.unload(pathSoccerField);
+        assetManager.unload(pathSoccer);
     }
 
     @Override
     public void render(float elapsedSeconds) {
         super.render(elapsedSeconds);
-
-        //Gdx.gl.glClearColor(0, 0, 0, 1);
-        //Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
@@ -197,31 +195,6 @@ public class SoccerScene extends PhysicScene {
         batch.dispose();
         font.dispose();
         world.dispose();
-    }
-
-    @Override
-    public boolean keyDown(int keycode) {
-        if ((keycode == Input.Keys.ESCAPE) || (keycode == Input.Keys.BACK)) {
-            Scene matchScene = new MatchScene();
-            Scene loadingScene = new LoadingScene(matchScene);
-            matchScene.setInTransition(new NoTransition(loadingScene));
-            loadingScene.setInTransition(new NoTransition(this));
-            getGame().setScene(loadingScene);
-            //getGame().setScene(new LoadingScene(new MatchScene()));
-        }
-        return false;
-    }
-
-    @Override
-    public boolean keyUp(int keycode) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public boolean keyTyped(char character) {
-        // TODO Auto-generated method stub
-        return false;
     }
 
     private Vector3 tmp = new Vector3();
@@ -390,12 +363,9 @@ public class SoccerScene extends PhysicScene {
         CircleShape shapeBox = new CircleShape();
         shapeBox.setRadius(toUnits(WORLD_WIDTH / 30));
         FixtureDef fixtureDefBox = new FixtureDef();
-        // 密度
 //		fixtureDefBox.density = 1;
-        // 磨擦力
         fixtureDefBox.friction = 0.2f;
         fixtureDefBox.shape = shapeBox;
-        // 彈力0-1,1為完全彈性碰撞
         fixtureDefBox.restitution = 0.2f;
         ball.createFixture(fixtureDefBox);
         shapeBox.dispose();
@@ -412,7 +382,6 @@ public class SoccerScene extends PhysicScene {
     private BodyDef setBodyDef() {
         bodyBoxDef = new BodyDef();
         bodyBoxDef.type = BodyType.DynamicBody;
-//		bodyBoxDef.position.set(WORLD_WIDTH /2, WORLD_HEIGHT - 1 - WORLD_WIDTH/30 );
         bodyBoxDef.position.set(toUnits(setX(-PIXEL_PER_METER)), toUnits(setY(WORLD_HEIGHT * 3 / 4)));
 
         return bodyBoxDef;
@@ -421,7 +390,6 @@ public class SoccerScene extends PhysicScene {
     private void resetPosotion() {
         if (resetBall) {
             ball.setLinearVelocity(0, 0);
-//			ball.setTransform(WORLD_WIDTH /2, WORLD_HEIGHT - 1 - ball.getFixtureList().get(0).getShape().getRadius(), 0);
             ball.setTransform(toUnits(setX(-PIXEL_PER_METER)), toUnits(setY(WORLD_HEIGHT * 3 / 4)), 0);
 
             balls++;
@@ -456,5 +424,18 @@ public class SoccerScene extends PhysicScene {
 
     private float setY(float y) {
         return getWorldY() + y;
+    }
+
+    @Override
+    public boolean keyDown(int keycode) {
+        if ((keycode == Input.Keys.ESCAPE) || (keycode == Input.Keys.BACK)) {
+            Scene matchScene = new MatchScene();
+            Scene loadingScene = new LoadingScene(matchScene);
+            matchScene.setInTransition(new NoTransition(loadingScene));
+            loadingScene.setInTransition(new NoTransition(this));
+            getGame().setScene(loadingScene);
+            //getGame().setScene(new LoadingScene(new MatchScene()));
+        }
+        return false;
     }
 }

@@ -32,8 +32,6 @@ import java.util.ArrayList;
 public class BoxingScene extends PhysicScene {
 
     private static final float PIXEL_PER_METER = 40;
-    //	public final float WORLD_WIDTH = 40;
-//	public final float WORLD_HEIGHT = 24;
     public final float WORLD_WIDTH = 1920;
     public final float WORLD_HEIGHT = 1128;
     public final float BACKGROUND_WIDTH = 2280;
@@ -73,6 +71,13 @@ public class BoxingScene extends PhysicScene {
     private boolean readyAns;
 
     private final float movingSpeedY = WORLD_HEIGHT / 50;
+    
+    private String pathPunchingBoxRed = "images/sport/boxing/punching_box_red.png";
+    private String pathPunchingBoxYellow = "images/sport/boxing/punching_box_yellow.png";
+    private String pathPunchingBoxGreen = "images/sport/boxing/punching_box_green.png";
+    private String pathPunchingBoxBlue = "images/sport/boxing/punching_box_blue.png";
+    private String pathPunchingBoxPurple = "images/sport/boxing/punching_box_purple.png";
+    private String pathRing = "images/sport/boxing/ring.png";
 
     public BoxingScene() {
         super(PIXEL_PER_METER);
@@ -82,22 +87,22 @@ public class BoxingScene extends PhysicScene {
 
     @Override
     public void loadResources(AssetManager assetManager) {
-        assetManager.load("images/sport/boxing/punching_box_red.png", Texture.class);
-        assetManager.load("images/sport/boxing/punching_box_yellow.png", Texture.class);
-        assetManager.load("images/sport/boxing/punching_box_green.png", Texture.class);
-        assetManager.load("images/sport/boxing/punching_box_blue.png", Texture.class);
-        assetManager.load("images/sport/boxing/punching_box_purple.png", Texture.class);
-        assetManager.load("images/sport/boxing/ring.png", Texture.class);
+    	assetManager.load(pathPunchingBoxRed, Texture.class);
+        assetManager.load(pathPunchingBoxYellow, Texture.class);
+        assetManager.load(pathPunchingBoxGreen, Texture.class);
+        assetManager.load(pathPunchingBoxBlue, Texture.class);
+        assetManager.load(pathPunchingBoxPurple, Texture.class);
+        assetManager.load(pathRing, Texture.class);
     }
 
     @Override
     public void loadResourcesComplete(AssetManager assetManager) {
-        texturePunchingBoxRed = assetManager.get("images/sport/boxing/punching_box_red.png", Texture.class);
-        texturePunchingBoxYellow = assetManager.get("images/sport/boxing/punching_box_yellow.png", Texture.class);
-        texturePunchingBoxGreen = assetManager.get("images/sport/boxing/punching_box_green.png", Texture.class);
-        texturePunchingBoxBlue = assetManager.get("images/sport/boxing/punching_box_blue.png", Texture.class);
-        texturePunchingBoxPurple = assetManager.get("images/sport/boxing/punching_box_purple.png", Texture.class);
-        textureField = assetManager.get("images/sport/boxing/ring.png", Texture.class);
+    	texturePunchingBoxRed = assetManager.get(pathPunchingBoxRed, Texture.class);
+        texturePunchingBoxYellow = assetManager.get(pathPunchingBoxYellow, Texture.class);
+        texturePunchingBoxGreen = assetManager.get(pathPunchingBoxGreen, Texture.class);
+        texturePunchingBoxBlue = assetManager.get(pathPunchingBoxBlue, Texture.class);
+        texturePunchingBoxPurple = assetManager.get(pathPunchingBoxPurple, Texture.class);
+        textureField = assetManager.get(pathRing, Texture.class);
 
         batch = new SpriteBatch();
 
@@ -117,20 +122,17 @@ public class BoxingScene extends PhysicScene {
 
     @Override
     public void unloadResources(AssetManager assetManager) {
-        assetManager.unload("images/sport/boxing/punching_box_red.png");
-        assetManager.unload("images/sport/boxing/punching_box_yellow.png");
-        assetManager.unload("images/sport/boxing/punching_box_green.png");
-        assetManager.unload("images/sport/boxing/punching_box_blue.png");
-        assetManager.unload("images/sport/boxing/punching_box_purple.png");
-        assetManager.unload("images/sport/boxing/ring.png");
+    	assetManager.unload(pathPunchingBoxRed);
+        assetManager.unload(pathPunchingBoxYellow);
+        assetManager.unload(pathPunchingBoxGreen);
+        assetManager.unload(pathPunchingBoxBlue);
+        assetManager.unload(pathPunchingBoxPurple);
+        assetManager.unload(pathRing);
     }
 
     @Override
     public void render(float elapsedSeconds) {
         super.render(elapsedSeconds);
-
-        //Gdx.gl.glClearColor(0, 0, 0, 1);
-        //Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
@@ -158,7 +160,8 @@ public class BoxingScene extends PhysicScene {
                             setColor();
                             punchingBag1isMovingStatus = 0;
                         }
-                    } else if (punchingBag1isMovingStatus == -1) {
+                    }
+                    else if (punchingBag1isMovingStatus == -1) {
                         if (body.getPosition().y > toUnits(setY(WORLD_HEIGHT * 2))) {
                             body.setLinearVelocity(0, 0);
                             clearColor();
@@ -171,14 +174,16 @@ public class BoxingScene extends PhysicScene {
                     sprite.setPosition(toPixels(body.getPosition().x) - sprite.getWidth() / 2, toPixels(body.getPosition().y) - sprite.getHeight() / 2);
                     sprite.setRotation(MathUtils.radiansToDegrees * body.getAngle());
                     sprite.draw(batch);
-                } else if (sprite == spritePunchingBag2) {
+                } 
+                else if (sprite == spritePunchingBag2) {
                     if (punchingBag2isMovingStatus == 1) {
                         if (body.getPosition().y < toUnits(setY(WORLD_HEIGHT / 2) - PIXEL_PER_METER)) {
                             body.setLinearVelocity(0, 0);
                             setColor();
                             punchingBag2isMovingStatus = 0;
                         }
-                    } else if (punchingBag2isMovingStatus == -1) {
+                    }
+                    else if (punchingBag2isMovingStatus == -1) {
                         if (body.getPosition().y > toUnits(setY(WORLD_HEIGHT * 2))) {
                             body.setLinearVelocity(0, 0);
                             clearColor();
@@ -191,14 +196,16 @@ public class BoxingScene extends PhysicScene {
                     sprite.setPosition(toPixels(body.getPosition().x) - sprite.getWidth() / 2, toPixels(body.getPosition().y) - sprite.getHeight() / 2);
                     sprite.setRotation(MathUtils.radiansToDegrees * body.getAngle());
                     sprite.draw(batch);
-                } else if (sprite == spritePunchingBag3) {
+                }
+                else if (sprite == spritePunchingBag3) {
                     if (punchingBag3isMovingStatus == 1) {
                         if (body.getPosition().y < toUnits(setY(WORLD_HEIGHT / 2))) {
                             body.setLinearVelocity(0, 0);
                             setColor();
                             punchingBag3isMovingStatus = 0;
                         }
-                    } else if (punchingBag3isMovingStatus == -1) {
+                    }
+                    else if (punchingBag3isMovingStatus == -1) {
                         if (body.getPosition().y > toUnits(setY(WORLD_HEIGHT * 2))) {
                             body.setLinearVelocity(0, 0);
                             clearColor();
@@ -280,16 +287,11 @@ public class BoxingScene extends PhysicScene {
     }
 
     private void createCamera() {
-//		camera = new OrthographicCamera(toUnits(WORLD_WIDTH), toUnits(WORLD_HEIGHT));
         camera = (OrthographicCamera) getViewport().getCamera();
-//		camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
         camera.update();
     }
 
     private void createFont() {
-
-//		getRootLayer().addActor(new Label());
-
         FreeTypeFontGenerator fontGenerator = new FreeTypeFontGenerator(
                 Gdx.files.internal("fonts/Roboto-Bold.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter param
@@ -304,9 +306,6 @@ public class BoxingScene extends PhysicScene {
                     Texture.TextureFilter.Linear);
         }
         fontGenerator.dispose();
-//		font = new BitmapFont(Gdx.files.internal("data/font/MyFont.fnt"), Gdx.files.internal("data/font/MyFont.png"), false);
-//		font.getData().setScale(2f);
-//		font.setColor(Color.YELLOW);
     }
 
     private void createWorldEdge() {

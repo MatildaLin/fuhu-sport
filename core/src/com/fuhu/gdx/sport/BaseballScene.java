@@ -30,8 +30,6 @@ import com.fuhu.gdx.scene.transition.NoTransition;
 public class BaseballScene extends PhysicScene {
 
     private static final float PIXEL_PER_METER = 40;
-//    public final float WORLD_WIDTH = 40;
-//    public final float WORLD_HEIGHT = 24;
     public final float WORLD_WIDTH = 1920;
     public final float WORLD_HEIGHT = 1128;
     public final float BACKGROUND_WIDTH = 2280;
@@ -55,6 +53,9 @@ public class BaseballScene extends PhysicScene {
     private Texture textureGloves;
     private Texture textureField;
     private Texture textureBall;
+	private String pathGloves = "images/sport/baseball/gloves.png";
+	private String pathBaseballField = "images/sport/baseball/baseball_field.jpg";
+	private String pathBaseball = "images/sport/baseball/baseball.png";
 
     private boolean resetBall;
     private int catchBalls;
@@ -68,16 +69,16 @@ public class BaseballScene extends PhysicScene {
 
     @Override
     public void loadResources(AssetManager assetManager) {
-        assetManager.load("images/sport/baseball/gloves.png", Texture.class);
-        assetManager.load("images/sport/baseball/baseball_field.jpg", Texture.class);
-        assetManager.load("images/sport/baseball/baseball.png", Texture.class);
+        assetManager.load(pathGloves, Texture.class);
+        assetManager.load(pathBaseballField, Texture.class);
+        assetManager.load(pathBaseball, Texture.class);
     }
 
     @Override
     public void loadResourcesComplete(AssetManager assetManager) {
-        textureGloves = assetManager.get("images/sport/baseball/gloves.png", Texture.class);
-        textureField = assetManager.get("images/sport/baseball/baseball_field.jpg", Texture.class);
-        textureBall = assetManager.get("images/sport/baseball/baseball.png", Texture.class);
+        textureGloves = assetManager.get(pathGloves, Texture.class);
+        textureField = assetManager.get(pathBaseballField, Texture.class);
+        textureBall = assetManager.get(pathBaseball, Texture.class);
 
         batch = new SpriteBatch();
 
@@ -98,17 +99,14 @@ public class BaseballScene extends PhysicScene {
 
     @Override
     public void unloadResources(AssetManager assetManager) {
-        assetManager.unload("images/sport/baseball/gloves.png");
-        assetManager.unload("images/sport/baseball/baseball_field.jpg");
-        assetManager.unload("images/sport/baseball/baseball.png");
+        assetManager.unload(pathGloves);
+        assetManager.unload(pathBaseballField);
+        assetManager.unload(pathBaseball);
     }
 
     @Override
     public void render(float elapsedSeconds) {
         super.render(elapsedSeconds);
-
-        //Gdx.gl.glClearColor(0, 0, 0, 1);
-        //Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
@@ -131,7 +129,6 @@ public class BaseballScene extends PhysicScene {
     }
 
     private void createFont() {
-
         FreeTypeFontGenerator fontGenerator = new FreeTypeFontGenerator(
                 Gdx.files.internal("fonts/Roboto-Bold.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter param
@@ -146,9 +143,6 @@ public class BaseballScene extends PhysicScene {
                     Texture.TextureFilter.Linear);
         }
         fontGenerator.dispose();
-//		font = new BitmapFont(Gdx.files.internal("data/font/MyFont.fnt"), Gdx.files.internal("data/font/MyFont.png"), false);
-//		font.getData().setScale(2f);
-//		font.setColor(Color.YELLOW);
     }
 
     private void checkBallOutSide() {
@@ -174,7 +168,8 @@ public class BaseballScene extends PhysicScene {
                         sprite.setOrigin(sprite.getWidth() / 2, sprite.getHeight() / 2);
                         sprite.setRotation(MathUtils.radiansToDegrees * body.getAngle());
                         sprite.draw(batch);
-                    } else {
+                    }
+                    else {
                         resetPosition();
                     }
 
@@ -327,12 +322,9 @@ public class BaseballScene extends PhysicScene {
         CircleShape shapeBox = new CircleShape();
         shapeBox.setRadius(toUnits(WORLD_WIDTH / 80));
         FixtureDef fixtureDefBox = new FixtureDef();
-        // 密度
 //		fixtureDefBox.density = 1;
-        // 磨擦力
         fixtureDefBox.friction = 0.2f;
         fixtureDefBox.shape = shapeBox;
-        // 彈力0-1,1為完全彈性碰撞
         fixtureDefBox.restitution = 0.2f;
         ball.createFixture(fixtureDefBox);
         shapeBox.dispose();
