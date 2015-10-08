@@ -348,12 +348,10 @@ public class MatchScene extends Scene {
                     newScene = new BoxingScene();
                     break;
                 case FOOTBALL:
-                	// set Portrait
-                	ApplicationManager.getInstance().getGDXCommand().setRequestedOrientationPortait();
                 	// set portrait viewport
                     getGame().setViewport(new SafeZoneViewport(
-                            new Vector2(1440, 2280),
-                            new Vector2(1200, 1848),
+                            new Vector2(2280, 4320),
+                            new Vector2(1920, 1128),
                             new OrthographicCamera()));
                     
                     newScene = new FootballScene();

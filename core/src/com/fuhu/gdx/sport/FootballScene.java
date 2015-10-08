@@ -44,10 +44,10 @@ import com.fuhu.gdx.viewport.SafeZoneViewport;
 public class FootballScene extends PhysicScene {
 
     private static final float PIXEL_PER_METER = 40;
-	public final float WORLD_WIDTH = 1200;  
-	public final float WORLD_HEIGHT = 1848;
-	public final float BACKGROUND_WIDTH = 1440;  
-	public final float BACKGROUND_HEIGHT = 2280;
+	public final float WORLD_WIDTH = 1920;  
+	public final float WORLD_HEIGHT = 1128;
+	public final float BACKGROUND_WIDTH = 2280;  
+	public final float BACKGROUND_HEIGHT = 4320;
 
 	private World world;
 	private BitmapFont font;
@@ -68,7 +68,7 @@ public class FootballScene extends PhysicScene {
 	private Texture textureField;
 	private Texture textureGuard;
 	private String pathFootball = "images/sport/football/football.png";
-	private String pathFootballField = "images/sport/football/football_field.jpg";
+	private String pathFootballField = "images/sport/football/football_field.png";
 	private String pathGuard = "images/sport/football/guard.png";
 	
 	private boolean resetBall;
@@ -129,17 +129,17 @@ public class FootballScene extends PhysicScene {
     public void render(float elapsedSeconds) {
         super.render(elapsedSeconds);
 		
-		deltaY -= PIXEL_PER_METER/2;
+		deltaY -= PIXEL_PER_METER/10;
 	    
 	    batch.setProjectionMatrix(camera.combined);
 		batch.begin();
 		
 		batch.draw(textureField, 0, 0, BACKGROUND_WIDTH, BACKGROUND_HEIGHT);
 		batch.draw(textureField, 
-				0, setY(deltaY % WORLD_HEIGHT),
+				0, setY(deltaY % BACKGROUND_HEIGHT),
 				BACKGROUND_WIDTH, BACKGROUND_HEIGHT, 0, 1, 1, 0);// u v u2 v2
 		batch.draw(textureField, 
-				0, setY(WORLD_HEIGHT + deltaY % WORLD_HEIGHT),
+				0, setY(BACKGROUND_HEIGHT + deltaY % BACKGROUND_HEIGHT),
 				BACKGROUND_WIDTH, BACKGROUND_HEIGHT, 0, 1, 1, 0);// u v u2 v2
 		
 		checkOutSide();
@@ -173,6 +173,16 @@ public class FootballScene extends PhysicScene {
 					if (toPixels(body.getPosition().y) < setY(sprite.getHeight()/2)) {
 						body.setTransform(body.getPosition().x, toUnits(setY(sprite.getHeight()/2)), 0);
 					}
+					else if (toPixels(body.getPosition().y) > setY(WORLD_HEIGHT - sprite.getHeight()/2)) {
+						body.setTransform(body.getPosition().x, toUnits(setY(WORLD_HEIGHT - sprite.getHeight()/2)), 0);
+					}
+					
+					if (toPixels(body.getPosition().x) < setX(sprite.getWidth()/2)) {
+						body.setTransform(toUnits(setX(sprite.getWidth()/2)), body.getPosition().y, 0);
+					}
+					else if (toPixels(body.getPosition().x) > setX(WORLD_WIDTH - sprite.getWidth()/2)) {
+						body.setTransform(toUnits(setX(WORLD_WIDTH - sprite.getWidth()/2)), body.getPosition().y, 0);
+					}
 					
 					sprite.setPosition(toPixels(body.getPosition().x) - sprite.getWidth()/2, toPixels(body.getPosition().y) - sprite.getHeight()/2);
 					sprite.setRotation(MathUtils.radiansToDegrees * body.getAngle());
@@ -184,15 +194,15 @@ public class FootballScene extends PhysicScene {
 						
 						if (isInterception) {
 							body.setLinearVelocity(0, 0);
-							body.setTransform(guard.getPosition().x, guard.getPosition().y + 1f, 0);
+							body.setTransform(guard.getPosition().x, guard.getPosition().y + 5f, 0);
 							
 							showEnemy();							
 						}
 						
-						if (body.getPosition().x <= toUnits(setX(sprite.getWidth()))) {
+						if (body.getPosition().x <= toUnits(setX(sprite.getWidth()/2))) {
 							guard.setLinearVelocity(enemySpeedX, enemySpeedY);
 						}
-						else if (body.getPosition().x >= toUnits(setX(WORLD_WIDTH - sprite.getWidth()))) {
+						else if (body.getPosition().x >= toUnits(setX(WORLD_WIDTH - sprite.getWidth()/2))) {
 							guard.setLinearVelocity(-enemySpeedX, enemySpeedY);
 						}
 						
@@ -329,14 +339,6 @@ public class FootballScene extends PhysicScene {
 		bodyGroundDef.type = BodyType.StaticBody;
 		bodyGroundDef.position.set( toUnits(setX(0f)), toUnits(setY(0f)) );
 		bodyGround = world.createBody( bodyGroundDef );
-		
-		EdgeShape edgeShape = new EdgeShape();
-		FixtureDef fixtureDef = new FixtureDef();
-		fixtureDef.shape = edgeShape;
-		edgeShape.set(new Vector2(toUnits(0f), toUnits(0f)), new Vector2(toUnits(0f), toUnits(WORLD_HEIGHT)));  
-        bodyGround.createFixture(fixtureDef);
-        edgeShape.set(new Vector2(toUnits(WORLD_WIDTH), toUnits(0f)), new Vector2(toUnits(WORLD_WIDTH), toUnits(WORLD_HEIGHT)));  
-        bodyGround.createFixture(fixtureDef);
 	}
 	
 	private void createFootBall() {
@@ -347,7 +349,7 @@ public class FootballScene extends PhysicScene {
         football = world.createBody(paddleBodyDef);
         
         PolygonShape paddleShape = new PolygonShape();
-        paddleShape.setAsBox(toUnits(WORLD_WIDTH/20), toUnits(WORLD_WIDTH/8));
+        paddleShape.setAsBox(toUnits(WORLD_HEIGHT/20), toUnits(WORLD_HEIGHT/8));
         
         FixtureDef paddleShapeDef = new FixtureDef();
         paddleShapeDef.shape = paddleShape;
@@ -363,7 +365,7 @@ public class FootballScene extends PhysicScene {
 		
 		// sprite
 		spriteFootBall = new Sprite(textureBall);
-		spriteFootBall.setSize(WORLD_WIDTH/8, WORLD_WIDTH/4);
+		spriteFootBall.setSize(WORLD_HEIGHT/8, WORLD_HEIGHT/4);
 		football.setUserData(spriteFootBall);
 	}
 	
@@ -381,7 +383,7 @@ public class FootballScene extends PhysicScene {
     	guard = world.createBody( setBodyDef() );
     	
     	CircleShape shapeBox = new CircleShape();
-		shapeBox.setRadius(toUnits(WORLD_WIDTH/12));
+		shapeBox.setRadius(toUnits(WORLD_HEIGHT/6));
     	
 		FixtureDef fixtureDefBox = new FixtureDef();
 		fixtureDefBox.density = 10000;
@@ -395,7 +397,7 @@ public class FootballScene extends PhysicScene {
 		
 		// sprite
 		spriteGuard = new Sprite(textureGuard);
-		spriteGuard.setSize(WORLD_WIDTH/4, WORLD_WIDTH/6);
+		spriteGuard.setSize(WORLD_HEIGHT/2, WORLD_HEIGHT/3);
 		spriteGuard.setRotation(0);
 		guard.setUserData(spriteGuard);
 
@@ -405,7 +407,7 @@ public class FootballScene extends PhysicScene {
 	private BodyDef setBodyDef() {
 		bodyBoxDef = new BodyDef();
 		bodyBoxDef.type = BodyType.DynamicBody;
-		bodyBoxDef.position.set( toUnits(setX(PIXEL_PER_METER / 2)) + (float)Math.random()*toUnits(WORLD_WIDTH - PIXEL_PER_METER), toUnits(setY(WORLD_HEIGHT + WORLD_WIDTH/6 + PIXEL_PER_METER)));
+		bodyBoxDef.position.set( toUnits(setX(PIXEL_PER_METER / 2)) + (float)Math.random()*toUnits(WORLD_WIDTH - PIXEL_PER_METER), toUnits(setY(WORLD_HEIGHT + PIXEL_PER_METER)));
 		
 		return bodyBoxDef;
 	}
@@ -413,7 +415,7 @@ public class FootballScene extends PhysicScene {
 	private void resetPosotion() {
 		if (resetBall) {
 			guard.setLinearVelocity(0, 0);
-			guard.setTransform( toUnits(setX(PIXEL_PER_METER / 2)) + (float)Math.random()*toUnits(WORLD_WIDTH - PIXEL_PER_METER), toUnits(setY(WORLD_HEIGHT + WORLD_WIDTH/6 + PIXEL_PER_METER)), 0);
+			guard.setTransform( toUnits(setX(PIXEL_PER_METER / 2)) + (float)Math.random()*toUnits(WORLD_WIDTH - PIXEL_PER_METER), toUnits(setY(WORLD_HEIGHT + PIXEL_PER_METER)), 0);
 			
 			balls++;
 			resetBall = false;
@@ -441,7 +443,6 @@ public class FootballScene extends PhysicScene {
     @Override
     public boolean keyDown(int keycode) {
         if ((keycode == Input.Keys.ESCAPE) || (keycode == Input.Keys.BACK)) {
-        	ApplicationManager.getInstance().getGDXCommand().setRequestedOrientationLandscape();
         	getGame().setViewport(new SafeZoneViewport(
         			new Vector2(2280, 1440), 
         			new Vector2(1920, 1128),
