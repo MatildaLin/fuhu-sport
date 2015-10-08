@@ -3,11 +3,13 @@ package com.fuhu.gdx.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -18,11 +20,13 @@ import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.fuhu.gdx.manager.ApplicationManager;
 import com.fuhu.gdx.scene.Scene;
 import com.fuhu.gdx.scene.SceneLayer;
 import com.fuhu.gdx.scene.transition.NoTransition;
 import com.fuhu.gdx.sport.*;
 import com.fuhu.gdx.utils.MaskedButton;
+import com.fuhu.gdx.viewport.SafeZoneViewport;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,7 +36,7 @@ import java.util.Random;
  * Created by matildalin on 2015/10/1.
  */
 public class MatchScene extends Scene {
-
+	
     private final String TAG = MatchScene.class.getSimpleName();
 
     private final String MATCH_FOLDER = "images/match/";
@@ -334,17 +338,34 @@ public class MatchScene extends Scene {
                 case BASEBALL:
                     newScene = new BaseballScene();
                     break;
+                case BASKETBALL:
+                    newScene = new BasketballScene();
+                    break;
+                case BICYCLE:
+                    newScene = new BicycleScene(192);
+                    break;
+                case BOXING:
+                    newScene = new BoxingScene();
+                    break;
+                case FOOTBALL:
+                	// set Portrait
+                	ApplicationManager.getInstance().getGDXCommand().setRequestedOrientationPortait();
+                	// set portrait viewport
+                    getGame().setViewport(new SafeZoneViewport(
+                            new Vector2(1440, 2280),
+                            new Vector2(1200, 1848),
+                            new OrthographicCamera()));
+                    
+                    newScene = new FootballScene();
+                    break;
+                case GOLF:
+                    newScene = new GolfScene();
+                    break;
                 case SOCCER:
                     newScene = new SoccerScene();
                     break;
                 case TENNIS:
                     newScene = new TennisScene(192);
-                    break;
-                case BOXING:
-                    newScene = new BoxingScene();
-                    break;
-                case BICYCLE:
-                    newScene = new BicycleScene(192);
                     break;
                 default:
                     newScene = new MainScene();
