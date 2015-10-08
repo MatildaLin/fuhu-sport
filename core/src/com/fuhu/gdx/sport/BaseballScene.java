@@ -83,7 +83,7 @@ public class BaseballScene extends PhysicScene {
         batch = new SpriteBatch();
 
         world = getWorld();
-        setDebugBox2d(true);
+        setDebugBox2d(false);
         createCamera();
         createFont();
         createWorldEdge();

@@ -91,7 +91,7 @@ public class SoccerScene extends PhysicScene {
 
         world = getWorld();
         world.setGravity(new Vector2(0f, 0f));
-        setDebugBox2d(true);
+        setDebugBox2d(false);
 
         createCamera();
         createFont();
