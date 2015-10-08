@@ -365,6 +365,9 @@ public class MatchScene extends Scene {
                 case TENNIS:
                     newScene = new TennisScene(192);
                     break;
+                case HOCKEY:
+                	newScene = new HockeyScene();
+                	break;
                 default:
                     newScene = new MainScene();
             }
