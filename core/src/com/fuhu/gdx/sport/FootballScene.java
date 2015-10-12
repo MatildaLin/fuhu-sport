@@ -75,10 +75,13 @@ public class FootballScene extends PhysicScene {
 	private boolean isInterception;
 	private int balls;
 	private int pn;
+
+	private boolean keepGoing;
+	private int goBackTimes;
 	
     private float deltaY;
     private float enemySpeedX= PIXEL_PER_METER/2;
-    private float enemySpeedY = -PIXEL_PER_METER/8;
+    private float enemySpeedY = -PIXEL_PER_METER/7;
 
     public FootballScene() {
         super(PIXEL_PER_METER);
@@ -129,12 +132,25 @@ public class FootballScene extends PhysicScene {
     public void render(float elapsedSeconds) {
         super.render(elapsedSeconds);
 		
-		deltaY -= PIXEL_PER_METER/10;
+        if (isInterception) {
+        	deltaY += PIXEL_PER_METER;
+        	goBackTimes++;
+        	if (goBackTimes >= 20) {
+        		goBackTimes = 0;
+        		keepGoing = true;
+        		football.setLinearVelocity(0, 0);
+        	}
+        }
+        else {
+        	deltaY -= PIXEL_PER_METER/10;	
+        }
 	    
 	    batch.setProjectionMatrix(camera.combined);
 		batch.begin();
 		
-		batch.draw(textureField, 0, 0, BACKGROUND_WIDTH, BACKGROUND_HEIGHT);
+		batch.draw(textureField, 
+				0, setY(-BACKGROUND_HEIGHT + deltaY % BACKGROUND_HEIGHT),
+				BACKGROUND_WIDTH, BACKGROUND_HEIGHT, 0, 1, 1, 0);// u v u2 v2
 		batch.draw(textureField, 
 				0, setY(deltaY % BACKGROUND_HEIGHT),
 				BACKGROUND_WIDTH, BACKGROUND_HEIGHT, 0, 1, 1, 0);// u v u2 v2
@@ -170,6 +186,11 @@ public class FootballScene extends PhysicScene {
 			Sprite sprite = (Sprite) body.getUserData();
 			if (sprite != null) {
 				if (sprite == spriteFootBall){
+					
+					if (isInterception) {
+						body.setTransform(body.getPosition().x, body.getPosition().y - 0.25f, 0);
+					}
+					
 					if (toPixels(body.getPosition().y) < setY(sprite.getHeight()/2)) {
 						body.setTransform(body.getPosition().x, toUnits(setY(sprite.getHeight()/2)), 0);
 					}
@@ -185,7 +206,12 @@ public class FootballScene extends PhysicScene {
 					}
 					
 					sprite.setPosition(toPixels(body.getPosition().x) - sprite.getWidth()/2, toPixels(body.getPosition().y) - sprite.getHeight()/2);
-					sprite.setRotation(MathUtils.radiansToDegrees * body.getAngle());
+					if (isInterception) {
+						sprite.setRotation(MathUtils.radiansToDegrees * body.getAngle() + 18*goBackTimes);
+					}
+					else {
+						sprite.setRotation(MathUtils.radiansToDegrees * body.getAngle());
+					}
 					sprite.draw(batch);
 				}
 				
@@ -194,9 +220,12 @@ public class FootballScene extends PhysicScene {
 						
 						if (isInterception) {
 							body.setLinearVelocity(0, 0);
-							body.setTransform(guard.getPosition().x, guard.getPosition().y + 5f, 0);
+							body.setTransform(guard.getPosition().x, guard.getPosition().y + 1f, 0);
 							
-							showEnemy();							
+							if (keepGoing) {
+								keepGoing = false;
+								showEnemy();
+							}
 						}
 						
 						if (body.getPosition().x <= toUnits(setX(sprite.getWidth()/2))) {
