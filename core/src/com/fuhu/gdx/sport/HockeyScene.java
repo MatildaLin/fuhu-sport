@@ -44,7 +44,7 @@ public class HockeyScene extends PhysicScene implements InputProcessor {
 	private World world;
 	private Body groundBody;
 	private Body goalBody;
-	private boolean startGameFlag;
+	private boolean shot;
 	private Body boxBody;
 	private Body ballBody;
 	private Texture backgroundTexture;
@@ -66,6 +66,7 @@ public class HockeyScene extends PhysicScene implements InputProcessor {
 	private OrthographicCamera camera;
 	private int number;
 	SpriteBatch batch;
+	private boolean isPrepared = false;
 
 	public HockeyScene() {
 		super(METER_TO_PIXEL);
@@ -95,6 +96,10 @@ public class HockeyScene extends PhysicScene implements InputProcessor {
 	@Override
 	public void render(float elapsedSeconds) {
 
+		if (!isPrepared) {
+			isPrepared = true;
+		}
+		
 		if (showingToast)
 			update(elapsedSeconds);
 
@@ -128,7 +133,7 @@ public class HockeyScene extends PhysicScene implements InputProcessor {
 			ballBody.setTransform(x_position, toUnits(getWorldHeight() / 2 + getWorldY() - 400), 0);
 			ballBody.setLinearVelocity(0, 0);
 			promptLabel.setText("" + number);
-			startGameFlag = false;
+			shot = false;
 			textLabel.setText("Score!!!");
 			textLabel.setColor(Color.BLUE);
 			addLayer(textLayer);
@@ -143,7 +148,7 @@ public class HockeyScene extends PhysicScene implements InputProcessor {
 				|| ballBody.getPosition().x > toUnits(getWorldX() + getWorldWidth() - 100)) {
 			ballBody.setTransform(x_position, toUnits(getWorldHeight() / 2 + getWorldY() - 400), 0);
 			ballBody.setLinearVelocity(0, 0);
-			startGameFlag = false;
+			shot = false;
 			textLabel.setText("OUT!!!");
 			textLabel.setColor(Color.RED);
 			addLayer(textLayer);
@@ -213,7 +218,7 @@ public class HockeyScene extends PhysicScene implements InputProcessor {
 
 	@Override
 	public boolean touchDown(int x, int y, int pointer, int button) {
-		if (startGameFlag == false) {
+		if (isPrepared && shot == false) {
 			Vector2 direction = new Vector2(toUnits(getWorldWidth() / 2 + getWorldX()),
 					toUnits(getWorldHeight() / 2 + goalSprite.getHeight() / 2 + 300));
 			// System.out.println("x,y = "+x+","+y);
@@ -225,7 +230,7 @@ public class HockeyScene extends PhysicScene implements InputProcessor {
 			float speed = 10;
 			ballBody.setLinearVelocity(direction.scl(speed));
 			// ballBody.setLinearVelocity(0, 10f);
-			startGameFlag = true;
+			shot = true;
 		}
 		return false;
 	}
