@@ -74,7 +74,6 @@ public class SkateboardScene extends PhysicScene implements ContactListener, Inp
 	float HEIGHT = getWorldHeight();
 	private World world;
 	private Body groundBody;
-	private MouseJoint mouseJoint;
 	private Body skateBoardBody;
 	private Texture backgroundTexture;
 	Label promptLabel;
@@ -100,7 +99,9 @@ public class SkateboardScene extends PhysicScene implements ContactListener, Inp
 	private Body roadblockBody;
 	private Sprite roadblockSprite;
 	private List<Texture> blockTextureList;
-
+	int previous_position;
+	int position;
+	
 	public SkateboardScene() {
 			super(METER_TO_PIXEL);
 			setDebugBox2d(false);
@@ -185,11 +186,12 @@ public class SkateboardScene extends PhysicScene implements ContactListener, Inp
 			scoreFlag = true;
 			addLayer(textLayer);
 			showingToast = true;
+			updateXPosition();
 		}
 
 		if (roadblockSprite.getX() < getWorldX() - 100) {
-			roadblockSprite = new Sprite(blockTextureList.get((int) (Math.random() * 5)));
-			roadblockBody.setTransform(toUnits(getWorldX() + getWorldWidth()), toUnits(getWorldY() + 200), 0);
+			roadblockSprite = new Sprite(blockTextureList.get(position));
+			roadblockBody.setTransform(toUnits(getWorldX() + getWorldWidth()), toUnits(getWorldY() + 250), 0);
 			roadblockBody.setLinearVelocity(-5f, 0);
 			scoreFlag = false;
 			contactFlag = false;
@@ -222,8 +224,8 @@ public class SkateboardScene extends PhysicScene implements ContactListener, Inp
 		FixtureDef groundShapeDef = new FixtureDef();
 		groundShapeDef.shape = edge;
 		// down edge
-		edge.set(new Vector2(0f, toUnits(getWorldY() + 100)),
-				new Vector2(toUnits(getWorldX() + getWorldWidth()), toUnits(getWorldY() + 100)));
+		edge.set(new Vector2(0f, toUnits(getWorldY() + 155)),
+				new Vector2(toUnits(getWorldX() + getWorldWidth() + 200), toUnits(getWorldY() + 155)));
 		groundBody.createFixture(groundShapeDef).setUserData("ground");
 
 	}
@@ -269,8 +271,8 @@ public class SkateboardScene extends PhysicScene implements ContactListener, Inp
 		// startGame=false;
 		Fixture fa = contact.getFixtureA();
 		Fixture fb = contact.getFixtureB();
-		System.out.println("fa.userdata=" + contact.getFixtureA().getUserData());
-		System.out.println("fb.userdata=" + contact.getFixtureB().getUserData());
+//		System.out.println("fa.userdata=" + contact.getFixtureA().getUserData());
+//		System.out.println("fb.userdata=" + contact.getFixtureB().getUserData());
 		
 		if ((fa.getUserData() != null && fb.getUserData() != null && fa.getUserData().equals("ground")
 				&& fb.getUserData().equals("leftWheel"))
@@ -279,7 +281,7 @@ public class SkateboardScene extends PhysicScene implements ContactListener, Inp
 			boxIsJumpingFlag = false;
 		} else if ((fa.getUserData() == null && fb.getUserData() != null && fb.getUserData().equals("roadblock"))
 				|| (fa.getUserData() != null && fb.getUserData() == null && fa.getUserData().equals("roadblock"))) {
-			System.out.println("box and roadblock contact!!");
+//			System.out.println("box and roadblock contact!!");
 			contactFlag = true;
 			contactPosition = roadblockSprite.getX();
 			if (roadblockSprite.getX() > skateBoardSprite.getX() + skateBoardSprite.getWidth() / 2)
@@ -329,7 +331,7 @@ public class SkateboardScene extends PhysicScene implements ContactListener, Inp
 	public boolean touchDown(int x, int y, int pointer, int button) {
 		if (!boxIsJumpingFlag && skateBoardBody != null) {
 			boxIsJumpingFlag = true;
-			skateBoardBody.setLinearVelocity(0, toUnits(2000));
+			skateBoardBody.setLinearVelocity(0, toUnits(1800));
 			animationState.setAnimation(0, "jump", false); // Set animation on track 0 to jump.
 			animationState.addAnimation(0, "idle", true, 0);
 		}
@@ -348,7 +350,7 @@ public class SkateboardScene extends PhysicScene implements ContactListener, Inp
 
 	@Override
 	public void loadResources(AssetManager assetManager) {
-		assetManager.load("images/sport/skateboard/back.png", Texture.class);
+		assetManager.load("images/sport/skateboard/back.jpg", Texture.class);
 		assetManager.load("images/sport/skateboard/teddy_bear_toy_1.png", Texture.class);
 		assetManager.load("images/sport/skateboard/teddy_bear_toy_2.png", Texture.class);
 		assetManager.load("images/sport/skateboard/teddy_bear_toy_3.png", Texture.class);
@@ -364,6 +366,13 @@ public class SkateboardScene extends PhysicScene implements ContactListener, Inp
 		camera = (OrthographicCamera) getViewport().getCamera();
 		camera.update();
 	}
+	
+	private void updateXPosition() {
+		do {
+			position = (int) (Math.random() * blockTextureList.size());
+		} while (previous_position == position);
+		previous_position = position;
+	}
 
 	@Override
 	public void loadResourcesComplete(AssetManager assetManager) {
@@ -371,7 +380,7 @@ public class SkateboardScene extends PhysicScene implements ContactListener, Inp
 		super.loadResourcesComplete(assetManager);
 		batch = new SpriteBatch();
 		createCamera();
-		backgroundTexture = new Texture(Gdx.files.internal("images/sport/skateboard/back.png"));
+		backgroundTexture = new Texture(Gdx.files.internal("images/sport/skateboard/back.jpg"));
 		skateBoardSprite = new Sprite(new Texture("images/sport/skateboard/board.png"));
 		rightWheelSprite = new Sprite(new Texture("images/sport/skateboard/wheel.png"));
 		leftWheelSprite = new Sprite(new Texture("images/sport/skateboard/wheel.png"));
@@ -390,7 +399,7 @@ public class SkateboardScene extends PhysicScene implements ContactListener, Inp
 		// Create right wheel body and shape
 		BodyDef ballBodyDef = new BodyDef();
 		ballBodyDef.type = BodyType.DynamicBody;
-		ballBodyDef.position.set(toUnits(350 + getWorldX()), toUnits(100 + getWorldY()));
+		ballBodyDef.position.set(toUnits(250 + getWorldX()), toUnits(200 + getWorldY()));
 		rightWheelBody = world.createBody(ballBodyDef);
 		CircleShape circle = new CircleShape();
 		circle.setRadius(toUnits(rightWheelSprite.getWidth() / 2));
@@ -409,7 +418,7 @@ public class SkateboardScene extends PhysicScene implements ContactListener, Inp
 		world.createJoint(revoluteJointDef1);
 
 		// Create left wheel body and shape
-		ballBodyDef.position.set(toUnits(250 + getWorldX()), toUnits(100 + getWorldY()));
+		ballBodyDef.position.set(toUnits(250 + getWorldX()), toUnits(200 + getWorldY()));
 		leftWheelBody = world.createBody(ballBodyDef);
 		leftWheelBody.createFixture(ballShapeDef).setUserData("leftWheel");
 
@@ -471,11 +480,13 @@ public class SkateboardScene extends PhysicScene implements ContactListener, Inp
 		blockTextureList.add(new Texture("images/sport/skateboard/teddy_bear_toy_4.png"));
 		blockTextureList.add(new Texture("images/sport/skateboard/teddy_bear_toy_5.png"));
 		blockTextureList.add(new Texture("images/sport/skateboard/teddy_bear_toy_6.png"));
-		roadblockSprite = new Sprite(blockTextureList.get((int) (Math.random() * 5)));
+		position = (int) (Math.random() * blockTextureList.size());
+		roadblockSprite = new Sprite(blockTextureList.get(position));
+		previous_position = position;
 
 		BodyDef roadblockBodyDef = new BodyDef();
 		roadblockBodyDef.type = BodyType.DynamicBody;
-		roadblockBodyDef.position.set(toUnits(getWorldX() + getWorldWidth()), toUnits(getWorldY() + 200));
+		roadblockBodyDef.position.set(toUnits(getWorldX() + getWorldWidth()), toUnits(getWorldY() + 250));
 		roadblockBody = world.createBody(roadblockBodyDef);
 		PolygonShape roadblockShape = new PolygonShape();
 		roadblockShape.setAsBox(toUnits(roadblockSprite.getWidth() / 2 - 40), toUnits(roadblockSprite.getHeight() / 2));
@@ -492,7 +503,7 @@ public class SkateboardScene extends PhysicScene implements ContactListener, Inp
 	public void unloadResources(AssetManager assetManager) {
 		// TODO Auto-generated method stub
 		super.unloadResources(assetManager);
-		assetManager.unload("images/sport/skateboard/back.png");
+		assetManager.unload("images/sport/skateboard/back.jpg");
 		assetManager.unload("images/sport/skateboard/teddy_bear_toy_1.png");
 		assetManager.unload("images/sport/skateboard/teddy_bear_toy_2.png");
 		assetManager.unload("images/sport/skateboard/teddy_bear_toy_3.png");
