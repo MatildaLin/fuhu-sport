@@ -342,7 +342,7 @@ public class MatchScene extends Scene {
                     newScene = new BasketballScene();
                     break;
                 case BICYCLE:
-                    newScene = new BicycleScene(192);
+                    newScene = new BicycleScene();
                     break;
                 case BOXING:
                     newScene = new BoxingScene();
@@ -363,7 +363,7 @@ public class MatchScene extends Scene {
                     newScene = new SoccerScene();
                     break;
                 case TENNIS:
-                    newScene = new TennisScene(192);
+                    newScene = new TennisScene();
                     break;
                 case HOCKEY:
                 	newScene = new HockeyScene();
