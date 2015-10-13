@@ -25,7 +25,7 @@ public class TennisRacket {
         racketBodyDef.position.set(scene.changeToUnits(camera.viewportWidth / 2), scene.changeToUnits(camera.viewportHeight / 2));
 
         racketSprite = new Sprite(scene.getRacketTexture());
-        racketSprite.setSize(racketSprite.getWidth() * 2.5f, racketSprite.getHeight() * 2.5f);
+        racketSprite.setSize(racketSprite.getWidth(), racketSprite.getHeight());
         racketBody = world.createBody(racketBodyDef);
         racketBody.setUserData(racketSprite);
 

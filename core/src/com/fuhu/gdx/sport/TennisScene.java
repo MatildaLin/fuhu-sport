@@ -30,6 +30,8 @@ import com.fuhu.gdx.sprite.TennisRacket;
  * Created by sabrinakuo on 2015/9/25.
  */
 public class TennisScene extends PhysicScene {
+
+    private static int pixelsPerUnit = 192;
     private final int GROUND_Y_HEIGHT = 100;
     private World mWorld;
     private TennisBall mTennisBall;
@@ -40,7 +42,7 @@ public class TennisScene extends PhysicScene {
     private Body worldBounds;
     private Fixture fixracket;
 
-    private Texture groundTexture, ballTexture, racketTexture;
+    private Texture groundTexture, ballTexture, racketTexture, bgTexture;
     private Vector2 groundPos1;
     private BitmapFont bitmapFont;
 
@@ -51,7 +53,7 @@ public class TennisScene extends PhysicScene {
     private SpriteBatch batch;
     private Array<Body> bodies = new Array<Body>();
 
-    public TennisScene(float pixelsPerUnit) {
+    public TennisScene() {
         super(pixelsPerUnit);
 
         Gdx.input.setCatchBackKey(true);
@@ -126,6 +128,7 @@ public class TennisScene extends PhysicScene {
 
         batch.setProjectionMatrix(mCamera.combined);
         batch.begin();
+        batch.draw(bgTexture, 0, 0, mCamera.viewportWidth, mCamera.viewportHeight);
         // fill the array with all bodies
         mWorld.getBodies(bodies);
 
@@ -204,24 +207,27 @@ public class TennisScene extends PhysicScene {
 
     @Override
     public void loadResources(AssetManager assetManager) {
-        assetManager.load("images/sport/tennis/ball.png", Texture.class);
-        assetManager.load("images/sport/tennis/racket.png", Texture.class);
         assetManager.load("images/sport/ground.png", Texture.class);
+        assetManager.load("images/sport/tennis/background.jpg", Texture.class);
+        assetManager.load("images/sport/tennis/tennis_ball.png", Texture.class);
+        assetManager.load("images/sport/tennis/tennis_racket.png", Texture.class);
     }
 
     @Override
     public void loadResourcesComplete(AssetManager assetManager) {
         groundTexture = assetManager.get("images/sport/ground.png");
-        ballTexture = assetManager.get("images/sport/tennis/ball.png");
-        racketTexture = assetManager.get("images/sport/tennis/racket.png");
+        bgTexture = assetManager.get("images/sport/tennis/background.jpg");
+        ballTexture = assetManager.get("images/sport/tennis/tennis_ball.png");
+        racketTexture = assetManager.get("images/sport/tennis/tennis_racket.png");
         createWorldBody();
     }
 
     @Override
     public void unloadResources(AssetManager assetManager) {
         assetManager.unload("images/sport/ground.png");
-        assetManager.unload("images/sport/tennis/ball.png");
-        assetManager.unload("images/sport/tennis/racket.png");
+        assetManager.unload("images/sport/tennis/background.jpg");
+        assetManager.unload("images/sport/tennis/tennis_ball.png");
+        assetManager.unload("images/sport/tennis/tennis_racket.png");
     }
 
     @Override

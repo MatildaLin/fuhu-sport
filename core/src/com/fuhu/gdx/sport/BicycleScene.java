@@ -22,6 +22,7 @@ import com.fuhu.gdx.sprite.Bicycle;
  */
 public class BicycleScene extends PhysicScene {
 
+    private static int pixelsPerUnit = 192;
     private final int GROUND_Y_HEIGHT = 100;
     private World mWorld;
     private OrthographicCamera mCamera;
@@ -32,9 +33,10 @@ public class BicycleScene extends PhysicScene {
     private Vector2 groundPos1, groundPos2, groundPos3;
     private float MOVEMENT = 400;
 
-    private Texture groundTexture, wheelTexture, skeletonTexture;
+    private Texture chainwheelTexture, crankTexture, frameTexture, pedalTexture, wheelTexture;
+    private Texture bgTextrue, groundTexture;
 
-    public BicycleScene(float pixelsPerUnit) {
+    public BicycleScene() {
         super(pixelsPerUnit);
 
         Gdx.input.setCatchBackKey(true);
@@ -93,9 +95,6 @@ public class BicycleScene extends PhysicScene {
 
         batch.setProjectionMatrix(mCamera.combined);
         batch.begin();
-//		batch.draw(groundTexture, groundPos1.x, groundPos1.y);
-//		batch.draw(groundTexture, groundPos2.x, groundPos2.y);
-//		batch.draw(groundTexture, groundPos3.x, groundPos3.y);
         batch.draw(groundTexture, groundPos1.x, groundPos1.y, this.getWorldWidth(), GROUND_Y_HEIGHT);
         batch.draw(groundTexture, groundPos2.x, groundPos2.y, this.getWorldWidth(), GROUND_Y_HEIGHT);
         batch.draw(groundTexture, groundPos3.x, groundPos3.y, this.getWorldWidth(), GROUND_Y_HEIGHT);
@@ -121,12 +120,28 @@ public class BicycleScene extends PhysicScene {
         return GROUND_Y_HEIGHT;
     }
 
+    public Texture getChainwheelTexture() {
+        return chainwheelTexture;
+    }
+
+    public Texture getCrankTexture() {
+        return crankTexture;
+    }
+
+    public Texture getPedalTexture() {
+        return pedalTexture;
+    }
+
     public Texture getWheelTexture() {
         return wheelTexture;
     }
 
-    public Texture getSkeletonTexture() {
-        return skeletonTexture;
+    public Texture getFrameTexture() {
+        return frameTexture;
+    }
+
+    public Texture getBgTextrue() {
+        return bgTextrue;
     }
 
     public float changeToUnits(float pixels) {
@@ -139,23 +154,35 @@ public class BicycleScene extends PhysicScene {
 
     @Override
     public void loadResources(AssetManager assetManager) {
-        assetManager.load("images/sport/bicycle/bicyclebody.png", Texture.class);
-        assetManager.load("images/sport/bicycle/bicyclewheel.png", Texture.class);
+        assetManager.load("images/sport/bicycle/chainwheel.png", Texture.class);
+        assetManager.load("images/sport/bicycle/crank.png", Texture.class);
+        assetManager.load("images/sport/bicycle/frame.png", Texture.class);
+        assetManager.load("images/sport/bicycle/pedal.png", Texture.class);
+        assetManager.load("images/sport/bicycle/wheel.png", Texture.class);
+        assetManager.load("images/sport/bicycle/background.jpg", Texture.class);
         assetManager.load("images/sport/ground.png", Texture.class);
     }
 
     @Override
     public void loadResourcesComplete(AssetManager assetManager) {
-        skeletonTexture = assetManager.get("images/sport/bicycle/bicyclebody.png");
-        wheelTexture = assetManager.get("images/sport/bicycle/bicyclewheel.png");
+        chainwheelTexture = assetManager.get("images/sport/bicycle/chainwheel.png");
+        crankTexture = assetManager.get("images/sport/bicycle/crank.png");
+        frameTexture = assetManager.get("images/sport/bicycle/frame.png");
+        pedalTexture = assetManager.get("images/sport/bicycle/pedal.png");
+        wheelTexture = assetManager.get("images/sport/bicycle/wheel.png");
+        bgTextrue = assetManager.get("images/sport/bicycle/background.jpg");
         groundTexture = assetManager.get("images/sport/ground.png");
         createWorldBody();
     }
 
     @Override
     public void unloadResources(AssetManager assetManager) {
-        assetManager.unload("images/sport/bicycle/bicyclebody.png");
-        assetManager.unload("images/sport/bicycle/bicyclewheel.png");
+        assetManager.unload("images/sport/bicycle/chainwheel.png");
+        assetManager.unload("images/sport/bicycle/crank.png");
+        assetManager.unload("images/sport/bicycle/frame.png");
+        assetManager.unload("images/sport/bicycle/pedal.png");
+        assetManager.unload("images/sport/bicycle/wheel.png");
+        assetManager.unload("images/sport/bicycle/background.jpg");
         assetManager.unload("images/sport/ground.png");
     }
 
@@ -167,7 +194,6 @@ public class BicycleScene extends PhysicScene {
             matchScene.setInTransition(new NoTransition(loadingScene));
             loadingScene.setInTransition(new NoTransition(this));
             getGame().setScene(loadingScene);
-            //getGame().setScene(new LoadingScene(new MatchScene()));
         }
         return false;
     }
